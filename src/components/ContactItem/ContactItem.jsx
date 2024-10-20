@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { deleteContact } from 'reduxtoolkit/slices/contactsSlice';
+import { deleteContact } from 'reduxtoolkit/operations';
 import { Box, Button, Text } from '@chakra-ui/react';
 
 const ContactItem = ({ contact }) => {

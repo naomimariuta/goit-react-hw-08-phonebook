@@ -13,6 +13,9 @@ const Register = () => {
     e.preventDefault();
     try {
       await dispatch(register({ name, email, password }));
+      setName('');
+      setEmail('');
+      setPassword('');
     } catch (error) {
       alert(error.message);
     }

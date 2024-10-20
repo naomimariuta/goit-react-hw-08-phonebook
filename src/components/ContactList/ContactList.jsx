@@ -1,13 +1,14 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchContacts } from 'reduxtoolkit/slices/contactsSlice';
+import { fetchContacts } from 'reduxtoolkit/operations';
 import ContactItem from 'components/ContactItem/ContactItem';
 import { Box, UnorderedList } from '@chakra-ui/react';
+import { selectFilter, selectContacts } from 'reduxtoolkit/selectors';
 
 const ContactList = () => {
   const dispatch = useDispatch();
-  const { items, isLoading, error } = useSelector(state => state.contacts);
-  const filter = useSelector(state => state.filter);
+  const { items, isLoading, error } = useSelector(selectContacts);
+  const filter = useSelector(selectFilter);
 
   useEffect(() => {
     dispatch(fetchContacts());

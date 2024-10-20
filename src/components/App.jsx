@@ -1,5 +1,10 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import {
+  HashRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Box } from '@chakra-ui/react';
 import UserMenu from './UserMenu/UserMenu';
@@ -10,18 +15,21 @@ import Register from 'pages/Register/Register';
 import Login from 'pages/Login/Login';
 
 const App = () => {
-  const user = useSelector(state => state.auth.user);
+  const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
 
   return (
     <Router>
       <Box p={4}>
         <Navigation />
-        {user && <UserMenu email={user.email} />}
+        {isAuthenticated && <UserMenu />}
         <Routes>
-          <Route index element={<Home />} />
+          <Route path="/" element={<Home />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/contacts" element={<Contacts />} />
+          <Route
+            path="/contacts"
+            element={isAuthenticated ? <Contacts /> : <Navigate to="/" />}
+          />
         </Routes>
       </Box>
     </Router>

@@ -1,9 +1,8 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import setAxiosDefaults from './setAxiosDefault';
 import { notification } from 'antd';
 
-setAxiosDefaults();
+const API_URL = 'https://connections-api.goit.global';
 
 const showErrorNotification = (message, description) => {
   notification.error({
@@ -17,14 +16,13 @@ export const register = createAsyncThunk(
   'users/register',
   async (userData, thunkAPI) => {
     try {
-      const response = await axios.post('/users/signup', {
+      const response = await axios.post(`${API_URL}/users/signup`, {
         name: userData.name,
         email: userData.email,
         password: userData.password,
       });
       const token = response.data.token;
       localStorage.setItem('token', token);
-      setAxiosDefaults();
       return response.data.user;
     } catch (error) {
       showErrorNotification(
@@ -40,13 +38,12 @@ export const login = createAsyncThunk(
   'users/login',
   async (credentials, thunkAPI) => {
     try {
-      const response = await axios.post('/users/login', {
+      const response = await axios.post(`${API_URL}/users/login`, {
         email: credentials.email,
         password: credentials.password,
       });
       const token = response.data.token;
       localStorage.setItem('token', token);
-      setAxiosDefaults();
       return response.data.user;
     } catch (error) {
       showErrorNotification(
@@ -58,17 +55,24 @@ export const login = createAsyncThunk(
   }
 );
 
-export const logout = createAsyncThunk('users/logout', async (_, thunkAPI) => {
+export const logout = createAsyncThunk(`${API_URL}users/logout`, async () => {
+  const token = localStorage.getItem('token');
   try {
-    await axios.post('/users/logout');
+    await axios.post(
+      `${API_URL}/users/logout`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     localStorage.removeItem('token');
-    setAxiosDefaults();
   } catch (error) {
     showErrorNotification(
       'Logout Error',
       'Failed to logout. Please try again.'
     );
-    return thunkAPI.rejectWithValue(error.message);
   }
 });
 
@@ -76,8 +80,13 @@ export const logout = createAsyncThunk('users/logout', async (_, thunkAPI) => {
 export const fetchContacts = createAsyncThunk(
   'contacts/fetchContacts',
   async (_, thunkAPI) => {
+    const token = localStorage.getItem('token');
     try {
-      const response = await axios.get('/contacts');
+      const response = await axios.get(`${API_URL}/contacts`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       return response.data;
     } catch (error) {
       showErrorNotification(
@@ -92,8 +101,13 @@ export const fetchContacts = createAsyncThunk(
 export const addContact = createAsyncThunk(
   'contacts/addContact',
   async (newContact, thunkAPI) => {
+    const token = localStorage.getItem('token');
     try {
-      const response = await axios.post('/contacts', newContact);
+      const response = await axios.post(`${API_URL}/contacts`, newContact, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       return response.data;
     } catch (error) {
       showErrorNotification(
@@ -108,8 +122,13 @@ export const addContact = createAsyncThunk(
 export const deleteContact = createAsyncThunk(
   'contacts/deleteContact',
   async (contactId, thunkAPI) => {
+    const token = localStorage.getItem('token');
     try {
-      await axios.delete(`/contacts/${contactId}`);
+      await axios.delete(`${API_URL}/contacts/${contactId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       return contactId;
     } catch (error) {
       showErrorNotification(

@@ -1,31 +1,37 @@
+import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { Box, Button, Flex } from '@chakra-ui/react';
+import { useSelector } from 'react-redux';
 
-const Navigation = () => (
+const Navigation = () => {
+  const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
+
   <Box as="nav" bg="teal.500" padding="4">
     <Flex justify="space-between" align="center">
-      <NavLink to="/">
-        <Button colorScheme="teal" variant="ghost">
-          Home
-        </Button>
-      </NavLink>
-      <NavLink to="/register">
-        <Button colorScheme="teal" variant="ghost">
-          Register
-        </Button>
-      </NavLink>
-      <NavLink to="/login">
-        <Button colorScheme="teal" variant="ghost">
-          Login
-        </Button>
-      </NavLink>
-      <NavLink to="/contacts">
-        <Button colorScheme="teal" variant="ghost">
-          Contacts
-        </Button>
-      </NavLink>
+      {isAuthenticated ? (
+        <>
+          <NavLink to="/contacts">
+            <Button colorScheme="teal" variant="ghost">
+              Contacts
+            </Button>
+          </NavLink>
+        </>
+      ) : (
+        <>
+          <NavLink to="/register">
+            <Button colorScheme="teal" variant="ghost">
+              Register
+            </Button>
+          </NavLink>
+          <NavLink to="/login">
+            <Button colorScheme="teal" variant="ghost">
+              Login
+            </Button>
+          </NavLink>
+        </>
+      )}
     </Flex>
-  </Box>
-);
+  </Box>;
+};
 
 export default Navigation;

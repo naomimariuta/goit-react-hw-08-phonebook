@@ -9,7 +9,6 @@ import { useSelector } from 'react-redux';
 import { Box } from '@chakra-ui/react';
 import UserMenu from './UserMenu/UserMenu';
 import Navigation from './Navigation/Navigation';
-import Home from 'pages/Home/Home';
 import Contacts from 'pages/Contacts/Contacts';
 import Register from 'pages/Register/Register';
 import Login from 'pages/Login/Login';
@@ -23,12 +22,23 @@ const App = () => {
         <Navigation />
         {isAuthenticated && <UserMenu />}
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
+          <Route
+            path="/register"
+            element={
+              isAuthenticated ? <Navigate to="/contacts" /> : <Register />
+            }
+          />
+          <Route
+            path="/login"
+            element={isAuthenticated ? <Navigate to="/contacts" /> : <Login />}
+          />
           <Route
             path="/contacts"
-            element={isAuthenticated ? <Contacts /> : <Navigate to="/" />}
+            element={isAuthenticated ? <Contacts /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="*"
+            element={<Navigate to={isAuthenticated ? '/contacts' : '/login'} />}
           />
         </Routes>
       </Box>

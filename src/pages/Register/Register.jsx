@@ -2,23 +2,25 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { register } from 'reduxtoolkit/operations';
 import { Box, Button, Input, FormLabel, FormControl } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleSubmit = async e => {
     e.preventDefault();
-    try {
-      await dispatch(register({ name, email, password }));
-      setName('');
-      setEmail('');
-      setPassword('');
-    } catch (error) {
-      alert(error.message);
-    }
+    dispatch(register({ name, email, password }))
+      .unwrap()
+      .then(() => {
+        navigate('/contacts');
+      })
+      .catch(error => {
+        console.error('Registration failed:', error);
+      });
   };
 
   return (

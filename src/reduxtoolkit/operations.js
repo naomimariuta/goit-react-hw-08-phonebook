@@ -13,8 +13,8 @@ const showErrorNotification = (message, description) => {
 
 // User Operations
 export const register = createAsyncThunk(
-  'users/register',
-  async (userData, thunkAPI) => {
+  'auth/register',
+  async (userData, { rejectWithValue }) => {
     try {
       const response = await axios.post(`${API_URL}/users/signup`, {
         name: userData.name,
@@ -29,14 +29,16 @@ export const register = createAsyncThunk(
         'Registration Error',
         'Failed to register. Please try again.'
       );
-      return thunkAPI.rejectWithValue(error.message);
+      return rejectWithValue(
+        error.response.data.message || 'Registration failed'
+      );
     }
   }
 );
 
 export const login = createAsyncThunk(
-  'users/login',
-  async (credentials, thunkAPI) => {
+  'auth/login',
+  async (credentials, { rejectWithValue }) => {
     try {
       const response = await axios.post(`${API_URL}/users/login`, {
         email: credentials.email,
@@ -50,12 +52,12 @@ export const login = createAsyncThunk(
         'Login Error',
         'Failed to login. Please try again.'
       );
-      return thunkAPI.rejectWithValue(error.message);
+      return rejectWithValue(error.response.data.message || 'Login failed');
     }
   }
 );
 
-export const logout = createAsyncThunk(`${API_URL}users/logout`, async () => {
+export const logout = createAsyncThunk('auth/logout', async () => {
   const token = localStorage.getItem('token');
   try {
     await axios.post(
@@ -69,6 +71,7 @@ export const logout = createAsyncThunk(`${API_URL}users/logout`, async () => {
     );
     localStorage.removeItem('token');
   } catch (error) {
+    console.error('Logout failed:', error);
     showErrorNotification(
       'Logout Error',
       'Failed to logout. Please try again.'

@@ -15,12 +15,14 @@ const showErrorNotification = (message, description) => {
 export const register = createAsyncThunk(
   'auth/register',
   async (userData, { rejectWithValue }) => {
+    console.log(userData);
     try {
       const response = await axios.post(`${API_URL}/users/signup`, {
         name: userData.name,
         email: userData.email,
         password: userData.password,
       });
+
       const token = response.data.token;
       localStorage.setItem('token', token);
       return response.data.user;

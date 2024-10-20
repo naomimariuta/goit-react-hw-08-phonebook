@@ -11,7 +11,7 @@ const Register = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleSubmit = async e => {
+  const handleSubmit = e => {
     e.preventDefault();
     dispatch(register({ name, email, password }))
       .unwrap()
